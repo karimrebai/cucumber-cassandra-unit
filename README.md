@@ -83,7 +83,7 @@ public void a_client_with_the_account_number(int arg1) throws Throwable {
 ```
 
 ### Steps
-On peut écrire une première version des steps, avec une implémentation fake du code prod :
+On peut écrire une première version des steps, avec une implémentation fake du code de prod :
 ```java
 public class AccountBalanceSteps {
 
