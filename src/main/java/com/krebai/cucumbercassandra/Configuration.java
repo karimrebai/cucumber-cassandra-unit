@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @org.springframework.context.annotation.Configuration
 @PropertySource(value = "classpath:system.properties")
-@ComponentScan("com.krebai.cucumbercassandra.")
+@ComponentScan("com.krebai.cucumbercassandra")
 public class Configuration {
 
 }
