@@ -12,6 +12,8 @@
         <junit.version>4.12</junit.version>
         <cucumber.version>1.2.5</cucumber.version>
         <assertj.version>2.0.0</assertj.version>
+        <spring.version>4.3.3.RELEASE</spring.version>
+        <cassandra.version>3.1.2</cassandra.version>
     </properties>
 
     <dependencies>
@@ -40,6 +42,30 @@
             <artifactId>cucumber-junit</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-core</artifactId>
+            <version>${cassandra.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-mapping</artifactId>
+            <version>${cassandra.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-extras</artifactId>
+            <version>${cassandra.version}</version>
         </dependency>
     </dependencies>
 </project>
