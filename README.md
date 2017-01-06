@@ -57,7 +57,7 @@ Feature: Get the account balance given an account
 ```
 
 ### Runner
-Là on créé la classe de test que l'on devra exécuter pour lancer nos tests Cucumber.
+Là on créé la classe de test que l'on devra exécuter pour lancer les steps Cucumber :
 ```java
 @RunWith(Cucumber.class)
 @CucumberOptions(format = { "pretty", "html:target/cucumber" }, features = "src/test/resources/")
@@ -69,7 +69,7 @@ Les options :
 - format : "pretty" permet d'afficher les scénarios dans la console et "html:target/cucumber" permet de générer un rapport html dans le dossier target.
 - features : permet de lier le runner au fichier feature que l'on a créé précédemment.
 
-A ce stade, lorsqu'on exécute cette classe, Cucumber nous génère le squelette du code des steps à implementer dans la console.
+A ce stade, lorsqu'on exécute cette classe, Cucumber nous génère le squelette du code des steps :
 ```
 ...
 You can implement missing steps with the snippets below:
