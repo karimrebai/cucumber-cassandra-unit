@@ -1,10 +1,10 @@
 
 package com.krebai.cucumbercassandra;
 
-import fr.ing.authorizationengine.core.dao.entity.AccountBalanceEntity;
+import java.math.BigDecimal;
 
 public interface AccountDao {
 
-	AccountBalanceEntity getAccountBalance(String accountNumber);
+	BigDecimal getAccountBalance(String accountNumber);
 
 }

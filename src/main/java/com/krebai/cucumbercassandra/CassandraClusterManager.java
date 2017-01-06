@@ -23,10 +23,6 @@ public class CassandraClusterManager  {
 		this.initConnection();
 	}
 
-	protected Cluster getCluster() {
-		return cluster;
-	}
-
 	public Session getSession() {
 		return session;
 	}

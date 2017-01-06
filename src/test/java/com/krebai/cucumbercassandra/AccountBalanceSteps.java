@@ -4,6 +4,12 @@ package com.krebai.cucumbercassandra;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Assert;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -11,11 +17,35 @@ import cucumber.api.java.en.When;
 
 public class AccountBalanceSteps {
 
+	private final AccountDao sut = applicationContext.getBean(AccountDao.class);
+
+	private static ApplicationContext applicationContext;
+
 	private String accountNumber;
 
 	private BigDecimal balance;
 
 	private boolean isAccountNotFoundExceptionThrown;
+
+	static {
+		try {
+			CassandraUnitBuilder cassandraUnitBuilder = new CassandraUnitBuilder();
+			cassandraUnitBuilder.startLocalCassandraInstance(CassandraUnitBuilder.LOCALHOST,
+					CassandraUnitBuilder.DEFAULT_PORT, "create_account_balance_table.cql",
+					CassandraUnitBuilder.KEY_SPACE);
+			cassandraUnitBuilder.saveFixture(accounts());
+
+			applicationContext = new AnnotationConfigApplicationContext(Configuration.class);
+		} catch (Exception e) {
+			Assert.fail("Fail to initialize test context: " + e.getMessage());
+		}
+	}
+
+	private static List<Account> accounts() {
+		List<Account> accounts = new ArrayList<>();
+		accounts.add(new Account("40000001939", new BigDecimal("95.38")));
+		return accounts;
+	}
 
 	@Given("^A client with the account number (\\d+)$")
 	public void a_client_with_the_account_number(String accountNumber) {
@@ -47,9 +77,6 @@ public class AccountBalanceSteps {
 	}
 
 	private BigDecimal getAccountBalance(String accountNumber) throws AccountNotFoundException {
-		if ("40000001939".equals(accountNumber)) {
-			return new BigDecimal("1200");
-		}
-		throw new AccountNotFoundException();
+		return sut.getAccountBalance(accountNumber);
 	}
 }
