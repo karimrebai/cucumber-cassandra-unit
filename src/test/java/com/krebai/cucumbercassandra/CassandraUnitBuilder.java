@@ -3,6 +3,7 @@ package com.krebai.cucumbercassandra;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.thrift.transport.TTransportException;
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
@@ -25,7 +26,7 @@ public class CassandraUnitBuilder {
 	private Cluster cluster;
 
 	public void startLocalCassandraInstance(String localhost, int defaultPort, String dataSetLocation,
-			String keySpace) throws TTransportException, IOException, InterruptedException {
+			String keySpace) throws TTransportException, IOException, InterruptedException, ConfigurationException {
 		EmbeddedCassandraServerHelper.startEmbeddedCassandra();
 		Cluster c = createCluster(localhost, defaultPort);
 		createKeySpace(dataSetLocation, keySpace, c);
@@ -51,9 +52,5 @@ public class CassandraUnitBuilder {
 				session.execute(statement.bind(account.getAccountNumber(), account.getBalance()));
 			}
 		}
-	}
-
-	public void close() {
-		cluster.close();
 	}
 }
