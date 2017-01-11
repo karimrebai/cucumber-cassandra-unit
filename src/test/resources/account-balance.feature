@@ -8,4 +8,4 @@ Feature: Get the account balance given an account
   Scenario: Account found
     Given A client with the account number 40000001939
     When I ask for the available balance
-    Then I get the corresponding balance 1200
+    Then I get the corresponding balance 1000

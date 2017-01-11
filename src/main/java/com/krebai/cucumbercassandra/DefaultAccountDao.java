@@ -31,13 +31,13 @@ public class DefaultAccountDao implements AccountDao {
 	}
 
 	@Override
-	public BigDecimal getAccountBalance(String accountNumber) {
+	public BigDecimal getAccountBalance(String accountNumber) throws AccountNotFoundException {
 		ResultSet resultSet = session.execute(accountBalancePreparedStatement.bind(accountNumber));
 		Row row = resultSet.one();
 
-		if (row != null) {
-			return new Account(row.getString(ACCOUNT_COLUMN), row.getDecimal(BALANCE_COLUMN)).getBalance();
+		if (row == null) {
+			throw new AccountNotFoundException();
 		}
-		return null;
+		return new Account(row.getString(ACCOUNT_COLUMN), row.getDecimal(BALANCE_COLUMN)).getBalance();
 	}
 }

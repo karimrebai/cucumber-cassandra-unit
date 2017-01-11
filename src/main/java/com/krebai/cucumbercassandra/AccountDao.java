@@ -5,6 +5,6 @@ import java.math.BigDecimal;
 
 public interface AccountDao {
 
-	BigDecimal getAccountBalance(String accountNumber);
+	BigDecimal getAccountBalance(String accountNumber) throws AccountNotFoundException;
 
 }

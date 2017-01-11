@@ -43,7 +43,7 @@ public class AccountBalanceSteps {
 
 	private static List<Account> accounts() {
 		List<Account> accounts = new ArrayList<>();
-		accounts.add(new Account("40000001939", new BigDecimal("95.38")));
+		accounts.add(new Account("40000001939", new BigDecimal("1000")));
 		return accounts;
 	}
 
@@ -55,7 +55,7 @@ public class AccountBalanceSteps {
 	@When("^I ask for the available balance$")
 	public void i_ask_for_the_available_balance() {
 		try {
-			this.balance = getAccountBalance(accountNumber);
+			this.balance = sut.getAccountBalance(accountNumber);
 		} catch (AccountNotFoundException e) {
 			this.isAccountNotFoundExceptionThrown = true;
 		}
@@ -76,7 +76,4 @@ public class AccountBalanceSteps {
 		assertThat(this.isAccountNotFoundExceptionThrown).isTrue();
 	}
 
-	private BigDecimal getAccountBalance(String accountNumber) throws AccountNotFoundException {
-		return sut.getAccountBalance(accountNumber);
-	}
 }
