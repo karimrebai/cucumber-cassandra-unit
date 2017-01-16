@@ -138,41 +138,38 @@ On va commencer par créer une classe qui portera la configuration de l'accès �
 
 ```java
 @Component
-public class CassandraClusterManager  {
+public class CassandraClusterInformation {
 
-	private CassandraClusterInformation clusterInformation;
+	@Value("#{T(java.util.Arrays).asList('${authorizationengine.cassandra.cluster.contact.point}')}")
+	private List<String> contactPoints;
 
-	private Cluster cluster;
+	@Value("${authorizationengine.cassandra.keyspace}")
+	private String keySpace;
 
-	private Session session;
+	@Value("${authorizationengine.cassandra.username}")
+	private String user;
 
-	public CassandraClusterManager(@Autowired CassandraClusterInformation clusterInformation) {
-		this.clusterInformation = clusterInformation;
-		this.initConnection();
+	@Value("${authorizationengine.cassandra.password}")
+	private String password;
+
+	@Value("${authorizationengine.cassandra.cluster.port}")
+	private int port;
+
+	public String getKeySpace() {
+		return keySpace;
 	}
 
-	public Session getSession() {
-		return session;
-	}
+	protected Cluster build() {
 
-	@PreDestroy
-	public void close() {
-		try {
-			if (!session.isClosed()) {
-				session.close();
-			}
-			if (!cluster.isClosed()) {
-				cluster.close();
-			}
-		} finally {
-			// Noting to do
+		Cluster.Builder buildCluster = Cluster.builder().withPort(port)
+		.addContactPoint(contactPoints.get(0));
+
+		if (!user.isEmpty() && !password.isEmpty()) {
+			buildCluster.withCredentials(user, password);
 		}
-	}
-
-	private void initConnection() {
-		this.cluster = clusterInformation.build();
-		this.session = cluster.connect(clusterInformation.getKeySpace());
+		return buildCluster.build();
 	}
 
 }
+
 ```
