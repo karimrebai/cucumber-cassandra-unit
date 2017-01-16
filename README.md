@@ -130,3 +130,49 @@ public class AccountBalanceSteps {
 	}
 }
 ```
+
+## Code de prod
+
+### Conf Cassandra
+On va commencer par créer une classe qui portera la configuration de l'accès à la base Cassandra :
+
+```java
+@Component
+public class CassandraClusterManager  {
+
+	private CassandraClusterInformation clusterInformation;
+
+	private Cluster cluster;
+
+	private Session session;
+
+	public CassandraClusterManager(@Autowired CassandraClusterInformation clusterInformation) {
+		this.clusterInformation = clusterInformation;
+		this.initConnection();
+	}
+
+	public Session getSession() {
+		return session;
+	}
+
+	@PreDestroy
+	public void close() {
+		try {
+			if (!session.isClosed()) {
+				session.close();
+			}
+			if (!cluster.isClosed()) {
+				cluster.close();
+			}
+		} finally {
+			// Noting to do
+		}
+	}
+
+	private void initConnection() {
+		this.cluster = clusterInformation.build();
+		this.session = cluster.connect(clusterInformation.getKeySpace());
+	}
+
+}
+```
