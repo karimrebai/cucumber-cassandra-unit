@@ -10,19 +10,19 @@ import java.util.List;
 @Component
 public class CassandraClusterInformation {
 
-	@Value("#{T(java.util.Arrays).asList('${authorizationengine.cassandra.cluster.contact.point}')}")
+	@Value("#{T(java.util.Arrays).asList('${cassandra.cluster.contact.point}')}")
 	private List<String> contactPoints;
 
-	@Value("${authorizationengine.cassandra.keyspace}")
+	@Value("${cassandra.keyspace}")
 	private String keySpace;
 
-	@Value("${authorizationengine.cassandra.username}")
+	@Value("${cassandra.username}")
 	private String user;
 
-	@Value("${authorizationengine.cassandra.password}")
+	@Value("${cassandra.password}")
 	private String password;
 
-	@Value("${authorizationengine.cassandra.cluster.port}")
+	@Value("${cassandra.cluster.port}")
 	private int port;
 
 	public String getKeySpace() {

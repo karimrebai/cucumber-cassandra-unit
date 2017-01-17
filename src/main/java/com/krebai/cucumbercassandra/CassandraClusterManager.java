@@ -1,8 +1,6 @@
 
 package com.krebai.cucumbercassandra;
 
-import javax.annotation.PreDestroy;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,20 +23,6 @@ public class CassandraClusterManager  {
 
 	public Session getSession() {
 		return session;
-	}
-
-	@PreDestroy
-	public void close() {
-		try {
-			if (!session.isClosed()) {
-				session.close();
-			}
-			if (!cluster.isClosed()) {
-				cluster.close();
-			}
-		} finally {
-			// Noting to do
-		}
 	}
 
 	private void initConnection() {

@@ -19,7 +19,7 @@ public class CassandraUnitBuilder {
 
 	final static int DEFAULT_PORT = 9142;
 
-	static final String KEY_SPACE = "d_authz_payment";
+	static final String KEY_SPACE = "the_keyspace";
 
 	private final static String INSERT_INTO_ACCOUNT_BALANCE =  "INSERT INTO ACCOUNT_BALANCE (account, balance) VALUES (?, ?);";
 
@@ -33,15 +33,15 @@ public class CassandraUnitBuilder {
 		cluster = c;
 	}
 
+	private Cluster createCluster(String localhost, int defaultPort) {
+		return new Cluster.Builder().addContactPoints(localhost).withPort(defaultPort).build();
+	}
+
 	private void createKeySpace(String dataSetLocation, String keySpace, Cluster c) {
 		Session session = c.connect();
 		CQLDataLoader dataLoader = new CQLDataLoader(session);
 		dataLoader.load(new ClassPathCQLDataSet(dataSetLocation, true, keySpace));
 		session.close();
-	}
-
-	private Cluster createCluster(String localhost, int defaultPort) {
-		return new Cluster.Builder().addContactPoints(localhost).withPort(defaultPort).build();
 	}
 
 	public void saveFixture(List<Account> accounts) {

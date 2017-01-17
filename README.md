@@ -1,10 +1,8 @@
 # Cucumber with Cassandra Unit
 
-<p>L'objectif de cet article est de voir un exemple d'utilisation de Cucumber avec une base Cassandra "in memomry".</p>
-
-<p>Pour cela, nous nous baserons sur une story simple dont le but est de, pour un client avec un numéro de compte donné, récupérer le montant présent sur son compte.</p>
-
-<p>Avant de commencer, voici les dépendances Maven dont nous aurons besoin :</p>
+L'objectif de cet article est de voir un exemple d'utilisation de Cucumber avec une base Cassandra "in memomry".
+Pour cela, nous nous baserons sur une story simple dont le but est de, pour un client avec un numéro de compte donné, récupérer le montant présent sur son compte.
+Avant de commencer, voici les dépendances Maven dont nous aurons besoin :
 ```xml
 <dependencies>
     <dependency>
@@ -140,19 +138,19 @@ On va commencer par créer une classe qui portera la configuration de l'accès �
 @Component
 public class CassandraClusterInformation {
 
-	@Value("#{T(java.util.Arrays).asList('${authorizationengine.cassandra.cluster.contact.point}')}")
+	@Value("#{T(java.util.Arrays).asList('${cassandra.cluster.contact.point}')}")
 	private List<String> contactPoints;
 
-	@Value("${authorizationengine.cassandra.keyspace}")
+	@Value("${cassandra.keyspace}")
 	private String keySpace;
 
-	@Value("${authorizationengine.cassandra.username}")
+	@Value("${cassandra.username}")
 	private String user;
 
-	@Value("${authorizationengine.cassandra.password}")
+	@Value("${cassandra.password}")
 	private String password;
 
-	@Value("${authorizationengine.cassandra.cluster.port}")
+	@Value("${cassandra.cluster.port}")
 	private int port;
 
 	public String getKeySpace() {
@@ -171,5 +169,68 @@ public class CassandraClusterInformation {
 	}
 
 }
-
 ```
+Et voici la classe qui permettra de gérer la connexion au cluster Cassandra :
+```java
+@Component
+public class CassandraClusterManager  {
+
+	private CassandraClusterInformation clusterInformation;
+
+	private Cluster cluster;
+
+	private Session session;
+
+	public CassandraClusterManager(@Autowired CassandraClusterInformation clusterInformation) {
+		this.clusterInformation = clusterInformation;
+		this.initConnection();
+	}
+
+	public Session getSession() {
+		return session;
+	}
+
+	private void initConnection() {
+		this.cluster = clusterInformation.build();
+		this.session = cluster.connect(clusterInformation.getKeySpace());
+	}
+
+}
+```
+
+### DAO Casandra
+Maintenant on crée une classe de DAO qui exposera une méthode permettant de récupérer, dans la base Cassandra, la balance d'un compte en fonction d'un numéro de compte :
+```java
+@Repository
+public class DefaultAccountDao implements AccountDao {
+
+	private static final String SELECT_FROM_ACCOUNT_BALANCE = "SELECT * FROM ACCOUNT_BALANCE WHERE account = ?";
+
+	private static final String ACCOUNT_COLUMN = "account";
+
+	private static final String BALANCE_COLUMN = "balance";
+
+	private final Session session;
+
+	private final PreparedStatement accountBalancePreparedStatement;
+
+	public DefaultAccountDao(@Autowired CassandraClusterManager clusterManager) {
+		this.session = clusterManager.getSession();
+
+		accountBalancePreparedStatement = this.session.prepare(SELECT_FROM_ACCOUNT_BALANCE);
+	}
+
+	@Override
+	public BigDecimal getAccountBalance(String accountNumber) throws AccountNotFoundException {
+		ResultSet resultSet = session.execute(accountBalancePreparedStatement.bind(accountNumber));
+		Row row = resultSet.one();
+
+		if (row == null) {
+			throw new AccountNotFoundException();
+		}
+		return new Account(row.getString(ACCOUNT_COLUMN), row.getDecimal(BALANCE_COLUMN)).getBalance();
+	}
+}
+```
+
+### Test
