@@ -18,13 +18,9 @@ import cucumber.api.java.en.When;
 public class AccountBalanceSteps {
 
 	private final AccountDao sut = applicationContext.getBean(AccountDao.class);
-
 	private static ApplicationContext applicationContext;
-
 	private String accountNumber;
-
 	private BigDecimal balance;
-
 	private boolean isAccountNotFoundExceptionThrown;
 
 	static {

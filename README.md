@@ -233,4 +233,20 @@ public class DefaultAccountDao implements AccountDao {
 }
 ```
 
-### Test
+### Configuration Spring
+
+Et pour finir, une petite classe pour la conf Spring où l'on définit notamment le fichier qui contient les propriétés de connexion à la base Cassandra :
+
+```java
+@org.springframework.context.annotation.Configuration
+@PropertySource(value = "classpath:system.properties")
+@ComponentScan("com.krebai.cucumbercassandra")
+public class Configuration {
+
+}
+```
+
+## Cassandra Unit
+
+La dernière étape consiste à intégrer Cassandra Unit à notre test Cucumber.
+Pour cela, on s'appuiera sur la classe suivante :
