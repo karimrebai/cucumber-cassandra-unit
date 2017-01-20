@@ -4,9 +4,8 @@ package com.krebai.cucumbercassandra;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.Assert;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,30 +16,30 @@ import cucumber.api.java.en.When;
 
 public class AccountBalanceSteps {
 
+	final static String LOCALHOST = "127.0.0.1";
+
+	final static int DEFAULT_PORT = 9142;
+
+	final static String THE_KEY_SPACE = "the_keyspace";
+
 	private final AccountDao sut = applicationContext.getBean(AccountDao.class);
+
 	private static ApplicationContext applicationContext;
+
 	private String accountNumber;
+
 	private BigDecimal balance;
+
 	private boolean isAccountNotFoundExceptionThrown;
 
 	static {
 		try {
-			CassandraUnitBuilder cassandraUnitBuilder = new CassandraUnitBuilder();
-			cassandraUnitBuilder.startLocalCassandraInstance(CassandraUnitBuilder.LOCALHOST,
-					CassandraUnitBuilder.DEFAULT_PORT, "create_account_balance_table.cql",
-					CassandraUnitBuilder.KEY_SPACE);
-			cassandraUnitBuilder.saveFixture(accounts());
-
+			EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+			new CassandraUnitDataLoader(LOCALHOST, DEFAULT_PORT).load(THE_KEY_SPACE, "account_balance_dataset.cql");
 			applicationContext = new AnnotationConfigApplicationContext(Configuration.class);
 		} catch (Exception e) {
 			Assert.fail("Fail to initialize test context: " + e.getMessage());
 		}
-	}
-
-	private static List<Account> accounts() {
-		List<Account> accounts = new ArrayList<>();
-		accounts.add(new Account("40000001939", new BigDecimal("1000")));
-		return accounts;
 	}
 
 	@Given("^A client with the account number (\\d+)$")

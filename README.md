@@ -248,5 +248,41 @@ public class Configuration {
 
 ## Cassandra Unit
 
-La dernière étape consiste à intégrer Cassandra Unit à notre test Cucumber.
-Pour cela, on s'appuiera sur la classe suivante :
+Finalement il ne reste plus qu'à intégrer Cassandra Unit dans nos steps.
+
+Etant donné que nous ne voulons démarrer la base Cassandra Unit qu'une seule fois pour tous les tests, l'appel à la méthode startEmbeddedCassandra de Cassandra Unit a été positionné dans un bloc static.
+Le chargement des données de test, ainsi que l'initialisation du contexte Spring peuvent aussi être effectués à ce niveau.
+
+```java
+	static {
+		try {
+			EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+			new CassandraUnitDataLoader(LOCALHOST, DEFAULT_PORT).load(THE_KEY_SPACE, "account_balance_dataset.cql");
+			applicationContext = new AnnotationConfigApplicationContext(Configuration.class);
+		} catch (Exception e) {
+			Assert.fail("Fail to initialize test context: " + e.getMessage());
+		}
+	}
+```
+
+Le code de chargement du dataset a été délégué à la classe suivante :
+
+```java
+public class CassandraUnitDataLoader {
+
+	private Cluster cluster;
+
+	private Session session;
+
+	public CassandraUnitDataLoader(String host, int port) {
+		this.cluster = new Cluster.Builder().addContactPoints(host).withPort(port).build();
+		this.session = cluster.connect();
+	}
+
+	public void load(String keySpace, String dataSetLocation) {
+		CQLDataLoader dataLoader = new CQLDataLoader(session);
+		dataLoader.load(new ClassPathCQLDataSet(dataSetLocation, true, keySpace));
+		session.close();
+	}
+}
+```
