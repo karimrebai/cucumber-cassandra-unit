@@ -38,7 +38,7 @@ Pour la partie Cucumber, on suivra 3 étapes :
 
 ### Fichier feature
 
-On crée un fichier "account-balance.feature" dans le dossier "src/test/resources" qui décrit notre story avec la syntaxe [gherkin] (https://github.com/cucumber/cucumber/wiki/Gherkin) :
+On crée un fichier "account-balance.feature" dans le dossier "src/test/resources" qui décrit notre story avec la syntaxe [gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) :
 
 ```gherkin
 Feature: Get the account balance given an account
