@@ -1,8 +1,8 @@
 # Cucumber with Cassandra Unit
 
-L'objectif de cet article est de voir un exemple d'utilisation de Cucumber avec une base Cassandra "in memomry".
+L'objectif de cepoc est de voir un exemple d'utilisation de Cucumber avec une base Cassandra "in memory".
 Pour cela, nous nous baserons sur une story simple dont le but est de, pour un client avec un numéro de compte donné, récupérer le montant présent sur son compte.
-Avant de commencer, voici les dépendances Maven dont nous aurons besoin :
+Avant de commencer, voici les dépendences Maven dont nous aurons besoin :
 ```xml
 <dependencies>
     <dependency>
@@ -38,7 +38,7 @@ Pour la partie Cucumber, on suivra 3 étapes :
 
 ### Fichier feature
 
-On crée un fichier "account-balance.feature" dans le dossier "src/test/resources" qui décrit notre story avec la syntaxe [gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) :
+Création d'un fichier "account-balance.feature" dans le dossier "src/test/resources" qui décrit notre story avec la syntaxe [gherkin](https://github.com/cucumber/cucumber/wiki/Gherkin) :
 
 ```gherkin
 Feature: Get the account balance given an account
@@ -55,7 +55,7 @@ Feature: Get the account balance given an account
 ```
 
 ### Runner
-Là on créé la classe de test que l'on devra exécuter pour lancer les steps Cucumber :
+Classe de test permettant d'exécuter les steps Cucumber:
 ```java
 @RunWith(Cucumber.class)
 @CucumberOptions(format = { "pretty", "html:target/cucumber" }, features = "src/test/resources/")
@@ -67,7 +67,7 @@ Les options :
 - format : "pretty" permet d'afficher les scénarios dans la console et "html:target/cucumber" permet de générer un rapport html dans le dossier target.
 - features : permet de lier le runner au fichier feature que l'on a créé précédemment.
 
-A ce stade, lorsqu'on exécute cette classe, Cucumber nous génère le squelette du code des steps :
+A ce stade, lorsqu'on exécute cette classe, Cucumber génère le squelette du code des steps :
 ```
 ...
 You can implement missing steps with the snippets below:
@@ -81,7 +81,6 @@ public void a_client_with_the_account_number(int arg1) throws Throwable {
 ```
 
 ### Steps
-On peut écrire une première version des steps, avec une implémentation fake du code de prod :
 ```java
 public class AccountBalanceSteps {
 
@@ -132,7 +131,7 @@ public class AccountBalanceSteps {
 ## Code de prod
 
 ### Conf Cassandra
-On va commencer par créer une classe qui portera la configuration de l'accès à la base Cassandra :
+Créarion d'une classe qui portera la configuration de l'accès à la base Cassandra :
 
 ```java
 @Component
@@ -170,7 +169,7 @@ public class CassandraClusterInformation {
 
 }
 ```
-Et voici la classe qui permettra de gérer la connexion au cluster Cassandra :
+Et voici la classe qui permet de gérer la connexion au cluster Cassandra :
 ```java
 @Component
 public class CassandraClusterManager  {
@@ -235,7 +234,7 @@ public class DefaultAccountDao implements AccountDao {
 
 ### Configuration Spring
 
-Et pour finir, une petite classe pour la conf Spring où l'on définit notamment le fichier qui contient les propriétés de connexion à la base Cassandra :
+Et pour finir, une petite classe pour la conf Spring où l'on définit notamment le fichier qui contient les propriétés de connexion à la base Cassandra:
 
 ```java
 @org.springframework.context.annotation.Configuration
